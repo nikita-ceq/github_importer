@@ -1,0 +1,42 @@
+pipeline{
+    agent any
+    tools {
+      terraform 'terraform'
+    }
+    
+//     parameters {
+//     password (name: 'AWS_ACCESS_KEY_ID')
+//     password (name: 'AWS_SECRET_ACCESS_KEY')
+//      }
+//     environment {
+//     AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
+//     AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
+//   }
+  environment {
+    AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+   }
+  stages{
+        stage("git checkout"){
+            steps{
+            git branch: 'main', url: 'https://github.com/nikita-ceq/github_importer.git'
+            }
+            }
+        stage("Terraform init"){
+            steps{
+            sh '''terraform --version
+                  terraform init'''
+            }
+        }
+        stage("Terraform apply"){
+            steps{
+            sh "terraform apply --auto-approve"
+            }
+        }
+        stage("Terraform destroy"){
+            steps{
+            sh "terraform destroy --auto-approve"
+                  }
+        }
+    }
+}
