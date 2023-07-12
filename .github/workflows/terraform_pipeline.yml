@@ -1,0 +1,51 @@
+name: terraform_pipeline
+on:
+  workflow_dispatch:
+env:
+#   # This item has no matching transformer
+#   AWS_ACCESS_KEY_ID:
+#   # This item has no matching transformer
+#   AWS_SECRET_ACCESS_KEY:
+jobs:
+  git_checkout:
+    name: git checkout
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3.5.0
+    - name: checkout
+      uses: actions/checkout@v3.5.0
+      with:
+        repository: nikita-ceq/github_importer
+  Terraform_init:
+    name: Terraform init
+    runs-on: ubuntu-latest
+    needs: git_checkout
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3.5.0
+    - name: sh
+      shell: bash
+      run: |-
+        terraform --version
+                          terraform init
+  Terraform_apply:
+    name: Terraform apply
+    runs-on: ubuntu-latest
+    needs: Terraform_init
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3.5.0
+    - name: sh
+      shell: bash
+      run: terraform apply --auto-approve
+  Terraform_destroy:
+    name: Terraform destroy
+    runs-on: ubuntu-latest
+    needs: Terraform_apply
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3.5.0
+    - name: sh
+      shell: bash
+      run: terraform destroy --auto-approve
