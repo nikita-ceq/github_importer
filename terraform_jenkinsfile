@@ -25,7 +25,12 @@ pipeline{
         stage("Terraform init"){
             steps{
             sh '''terraform --version
-                  terraform init'''
+                  terraform init -reconfigure'''
+            }
+        }
+        stage("Terraform plan"){
+            steps{
+            sh "terraform plan"
             }
         }
         stage("Terraform apply"){
@@ -39,4 +44,10 @@ pipeline{
                   }
         }
     }
+   post { 
+        always { 
+            echo 'pipeline is successfully executed'
+        }
+    }
+
 }
